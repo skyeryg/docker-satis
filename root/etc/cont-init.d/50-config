@@ -1,0 +1,42 @@
+#!/usr/bin/with-contenv bash
+
+# make our folders
+mkdir -p \
+	/config/satisfy \
+	/config/.ssh \
+	/config/.composer \
+	/config/log/satis \
+	/config/cron
+
+# check for config and copy default if needed
+[[ ! -f "/config/satisfy/parameters.satisfy.yml" ]] && \
+	cp /defaults/parameters.yml /config/satisfy/parameters.yml
+[[ ! -f "/config/satisfy/satis.json" ]] && \
+	cp /var/www/satisfy/satis.json.dist /config/satisfy/satis.json
+
+# create satisfy config symlinks
+
+symlinks=( \
+/var/www/satisfy/satis.json \
+/var/www/satisfy/config/parameters.yml
+)
+
+for i in "${symlinks[@]}"
+do
+[[ -e "$i" && ! -L "$i" ]] && rm -rf "$i"
+[[ ! -L "$i" ]] && ln -s /config/satisfy/"$(basename "$i")" "$i"
+done
+
+# satis 日志
+[[ -d "/var/www/satisfy/var/satis" && ! -L "/var/www/satisfy/var/satis" ]] \
+	&& rm -rf "/var/www/satisfy/var/satis"
+[[ ! -L "/var/www/satisfy/var/satis" ]] && \
+	ln -s "/config/log/satis" "/var/www/satisfy/var/satis"
+
+# permissions
+echo "Setting permissions"
+chown -R abc:abc \
+	/app \
+	/config \
+	/var/www/
+chmod +x /app/build.sh
