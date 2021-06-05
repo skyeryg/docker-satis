@@ -12,6 +12,9 @@ RUN \
  apk add --no-cache --upgrade \
 	curl \
 	php7-curl \
+	php7-phar \
+	php7-tokenizer \
+	php7-dom \
 	php7-zip \
 	tar && \
  echo "**** install  composer ****" && \
@@ -39,7 +42,7 @@ RUN \
 	/tmp/*
 
 # give abc a home folder, needed for comictagger prefs.
-usermod -d /config abc
+RUN usermod -d /config abc
 
 # add local files
 COPY root/ /
