@@ -7,6 +7,8 @@ ARG SATISFY_RELEASE
 LABEL build_version="shangmob version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="skyer"
 
+ENV APP_ROOT=/var/www/satisfy
+
 RUN \
  echo "**** install runtime packages ****" && \
  apk add --no-cache --upgrade \
@@ -23,7 +25,7 @@ RUN \
  mv /tmp/composer.phar /usr/local/bin/composer && \
  echo "**** fetch satisfy ****" && \
  mkdir -p \
-	/var/www/satisfy && \
+	${APP_ROOT} && \
  if [ -z ${SATISFY_RELEASE+x} ]; then \
 	SATISFY_RELEASE=$(curl -sX GET "https://api.github.com/repos/ludofleury/satisfy/releases/latest" \
 	| awk '/tag_name/{print $4;exit}' FS='[""]'); \
@@ -33,9 +35,9 @@ RUN \
 	"https://github.com/ludofleury/satisfy/archive/${SATISFY_RELEASE}.tar.gz" && \
  tar xf \
 	/tmp/satisfy.tar.gz -C \
-	/var/www/satisfy/ --strip-components=1 && \
+	${APP_ROOT}/ --strip-components=1 && \
  echo "**** install composer dependencies ****" && \
- composer install -d /var/www/satisfy && \
+ composer install -d ${APP_ROOT} && \
  echo "**** cleanup ****" && \
  rm -rf \
 	/root/.composer \
@@ -46,6 +48,3 @@ RUN usermod -d /config abc
 
 # add local files
 COPY root/ /
-
-# ports and volumes
-VOLUME /config
