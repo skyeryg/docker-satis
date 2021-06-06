@@ -15,7 +15,6 @@ SATIS_FILE="/config/satisfy/satis.json"
 : ${REPO_DOMAIN_LIST:=github.com gitee.com bitbucket.org gitlab.com}
 
 : ${CRON_ENABLED:=true}
-: ${CRON_SYNC_EVERY:=600}
 
 USER_HOME=/config
 
@@ -92,9 +91,12 @@ for _DOMAIN in ${REPO_DOMAIN_LIST} ; do
   fi
 done
 
-# TODO:crontab
+# crontab
+[[ ! -f "/config/cron" ]] && \
+	cp /defaults/cron /config/cron
+
 if [[ "${CRON_ENABLED}" == "true" ]]; then
-  gosu ${APP_USER}:${APP_USER} /sync_repos.sh ${CRON_SYNC_EVERY}&
+  crontab -u abc /config/cron
 fi
 
 # permissions
@@ -103,3 +105,11 @@ chown -R abc:abc \
 	/app \
 	/config \
 	/var/www/
+
+
+if [ "$LOG_FILE" = "true" ]; then
+  crontab -u abc /defaults/duckcron
+  echo "log will be output to file"
+else
+  echo "log will be output to docker log"
+fi
