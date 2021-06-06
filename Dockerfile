@@ -13,6 +13,7 @@ RUN \
  echo "**** install runtime packages ****" && \
  apk add --no-cache --upgrade \
 	curl \
+	openssh-client \
 	php7-curl \
 	php7-phar \
 	php7-tokenizer \
