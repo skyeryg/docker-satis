@@ -3,7 +3,7 @@ server {
 
 	listen 443 ssl;
 
-	root /var/www/satisfy/web;
+	root /var/www/satisfy/public;
 	index index.php index.html index.htm;
 
 	server_name _;
