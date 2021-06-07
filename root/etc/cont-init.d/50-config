@@ -1,8 +1,10 @@
 #!/usr/bin/with-contenv bash
 
 GENERATED_SECRET="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)"
-PARAM_FILE="/config/satisfy/parameters.yml"
-SATIS_FILE="/config/satisfy/satis.json"
+CONFIG_PATH="/config/satisfy"
+
+PARAM_FILE="${CONFIG_PATH}/parameters.yml"
+SATIS_FILE="${CONFIG_PATH}/satis.json"
 
 : ${SECRET:=$GENERATED_SECRET}
 
@@ -14,10 +16,8 @@ SATIS_FILE="/config/satisfy/satis.json"
 
 : ${CRON_ENABLED:=true}
 
-USER_HOME=/config/satisfy
-
 # make our folders
-mkdir -p /config/satisfy/{composer,satis,log}
+mkdir -p ${CONFIG_PATH}/{composer,satis,log,ssh}
 
 # check for config and make default if needed
 if [[ ! -e ${PARAM_FILE} ]]; then
@@ -62,26 +62,34 @@ do
 done
 
 # SSH
-if [[ ! -e ${USER_HOME}/.ssh ]]; then
-  mkdir ${USER_HOME}/.ssh
-  chmod 700 ${USER_HOME}/.ssh
+if [[ ! -e ${APP_PATH}/.ssh ]]; then
+  mkdir ${APP_PATH}/.ssh
+  chmod 700 ${APP_PATH}/.ssh
 fi
 
-if [[ ! -e ${USER_HOME}/.ssh/id_rsa ]]; then
-  echo "${SSH_PRIVATE_KEY}" > ${USER_HOME}/.ssh/id_rsa
-  chmod 400 ${USER_HOME}/.ssh/id_rsa
+if [[ ! -e ${CONFIG_PATH}/ssh/id_rsa ]]; then
+  echo "${SSH_PRIVATE_KEY}" > ${CONFIG_PATH}/ssh/id_rsa
+  chmod 400 ${CONFIG_PATH}/ssh/id_rsa
 fi
 
-[[ -f ${USER_HOME}/.ssh/known_hosts ]] && \
-  rm ${USER_HOME}/.ssh/known_hosts
+if [[ ! -e ${APP_PATH}/.ssh/config ]]; then
+  cat >${APP_PATH}/.ssh/config <<EOF
+Host *
+IdentityFile ${CONFIG_PATH}/ssh/id_rsa
+EOF
+chmod 400 ${APP_PATH}/.ssh/config
+fi
+
+[[ -f ${APP_PATH}/.ssh/known_hosts ]] && \
+  rm ${APP_PATH}/.ssh/known_hosts
 
 for _DOMAIN in ${REPO_DOMAIN_LIST} ; do
   IFS=':' read -a arr <<< "${_DOMAIN}"
   if [[ "${#arr[@]}" == "2" ]]; then
       port="${arr[1]}"
-      ssh-keyscan -t rsa,dsa -p "${port}" ${arr[0]} >> ${USER_HOME}/.ssh/known_hosts
+      ssh-keyscan -t rsa,dsa -p "${port}" ${arr[0]} >> ${APP_PATH}/.ssh/known_hosts
   else
-      ssh-keyscan -t rsa,dsa ${_DOMAIN} >> ${USER_HOME}/.ssh/known_hosts
+      ssh-keyscan -t rsa,dsa ${_DOMAIN} >> ${APP_PATH}/.ssh/known_hosts
   fi
 done
 

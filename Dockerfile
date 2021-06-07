@@ -46,7 +46,7 @@ RUN \
 	/tmp/*
 
 # give abc a home folder, needed for comictagger prefs.
-RUN mkdir /config/satisfy && usermod -d /config/satisfy abc
+RUN usermod -d ${APP_PATH} abc
 ENV COMPOSER_HOME=/config/satisfy/composer
 
 # add local files
