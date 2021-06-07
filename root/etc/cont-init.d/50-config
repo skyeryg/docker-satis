@@ -2,7 +2,7 @@
 
 GENERATED_SECRET="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1)"
 PARAM_FILE="/config/satisfy/parameters.yml"
-SATIS_FILE="/config/satisfy/satis.json"
+SATIS_FILE="${APP_PATH}/satis.json"
 
 : ${SECRET:=$GENERATED_SECRET}
 
@@ -48,7 +48,6 @@ fi
 # create satisfy config symlinks
 
 symlinks=( \
-${APP_PATH}/satis.json \
 ${APP_PATH}/config/parameters.yml \
 ${APP_PATH}/var/composer \
 ${APP_PATH}/var/satis \
