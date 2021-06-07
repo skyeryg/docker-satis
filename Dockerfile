@@ -9,6 +9,7 @@ LABEL maintainer="skyer"
 
 ENV APP_PATH=/var/www/satisfy
 
+
 RUN \
  echo "**** install runtime packages ****" && \
  apk add --no-cache --upgrade \
@@ -46,6 +47,7 @@ RUN \
 
 # give abc a home folder, needed for comictagger prefs.
 RUN mkdir /config/satisfy && usermod -d /config/satisfy abc
+ENV COMPOSER_HOME=/config/satisfy/composer
 
 # add local files
 COPY root/ /
