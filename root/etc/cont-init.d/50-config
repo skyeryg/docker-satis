@@ -5,8 +5,6 @@ PARAM_FILE="/config/satisfy/parameters.yml"
 SATIS_FILE="/config/satisfy/satis.json"
 
 : ${SECRET:=$GENERATED_SECRET}
-: ${ADMIN_AUTH:=false}
-: ${ADMIN_USERS:=\~}
 
 : ${REPO_NAME:=company/private-repository}
 : ${HOMEPAGE:=http://localhost:8080}
@@ -23,17 +21,8 @@ mkdir -p /config/satisfy/{composer,satis}
 
 # check for config and make default if needed
 if [[ ! -e ${PARAM_FILE} ]]; then
-  cat >${PARAM_FILE} <<EOF
-parameters:
-  secret: "${SECRET}"
-  satis_filename: "%kernel.project_dir%/satis.json"
-  satis_log_path: "%kernel.project_dir%/var/satis"
-  admin.auth: ${ADMIN_AUTH}
-  admin.users: ${ADMIN_USERS}
-  composer.home: "%kernel.project_dir%/var/composer"
-  github.secret: "${SECRET}"
-  gitlab.secret: "${SECRET}"
-EOF
+  cp ${APP_ROOT}/config/parameters.yml.dist ${PARAM_FILE}
+  sed -i "s| secret:.*$| secret: "${SECRET}"|g" ${PARAM_FILE}
 fi
 
 if [[ ! -e ${SATIS_FILE} ]]; then
