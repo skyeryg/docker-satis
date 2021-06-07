@@ -45,7 +45,7 @@ RUN \
 	/tmp/*
 
 # give abc a home folder, needed for comictagger prefs.
-RUN usermod -d /config abc
+RUN mkdir /config/satisfy && usermod -d /config/satisfy abc
 
 # add local files
 COPY root/ /

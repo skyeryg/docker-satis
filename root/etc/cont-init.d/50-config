@@ -16,10 +16,10 @@ SATIS_FILE="/config/satisfy/satis.json"
 
 : ${CRON_ENABLED:=true}
 
-USER_HOME=/config
+USER_HOME=/config/satisfy
 
 # make our folders
-mkdir -p /config/satisfy
+mkdir -p /config/satisfy/{composer, satis}
 
 # check for config and make default if needed
 if [[ ! -e ${PARAM_FILE} ]]; then
@@ -60,7 +60,9 @@ fi
 
 symlinks=( \
 ${APP_ROOT}/satis.json \
-${APP_ROOT}/config/parameters.yml
+${APP_ROOT}/config/parameters.yml \
+${APP_ROOT}/var/composer \
+${APP_ROOT}/var/satis
 )
 
 for i in "${symlinks[@]}"
@@ -72,7 +74,6 @@ done
 # SSH
 if [[ ! -e ${USER_HOME}/.ssh ]]; then
   mkdir ${USER_HOME}/.ssh
-  chown ${APP_USER}:${APP_USER} ${USER_HOME}/.ssh
   chmod 700 ${USER_HOME}/.ssh
 fi
 
@@ -92,11 +93,11 @@ for _DOMAIN in ${REPO_DOMAIN_LIST} ; do
 done
 
 # crontab
-[[ ! -f "/config/cron" ]] && \
-	cp /defaults/cron /config/cron
+[[ ! -f "/config/satisfy/cron" ]] && \
+	cp /defaults/cron /config/satisfy/cron
 
 if [[ "${CRON_ENABLED}" == "true" ]]; then
-  crontab -u abc /config/cron
+  crontab -u abc /config/satisfy/cron
 fi
 
 # permissions
