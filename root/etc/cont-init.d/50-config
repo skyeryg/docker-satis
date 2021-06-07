@@ -17,11 +17,11 @@ SATIS_FILE="/config/satisfy/satis.json"
 USER_HOME=/config/satisfy
 
 # make our folders
-mkdir -p /config/satisfy/{composer,satis}
+mkdir -p /config/satisfy/{composer,satis,log}
 
 # check for config and make default if needed
 if [[ ! -e ${PARAM_FILE} ]]; then
-  cp ${APP_ROOT}/config/parameters.yml.dist ${PARAM_FILE}
+  cp ${APP_PATH}/config/parameters.yml.dist ${PARAM_FILE}
   sed -i "s| secret:.*$| secret: "${SECRET}"|g" ${PARAM_FILE}
 fi
 
@@ -48,10 +48,11 @@ fi
 # create satisfy config symlinks
 
 symlinks=( \
-${APP_ROOT}/satis.json \
-${APP_ROOT}/config/parameters.yml \
-${APP_ROOT}/var/composer \
-${APP_ROOT}/var/satis
+${APP_PATH}/satis.json \
+${APP_PATH}/config/parameters.yml \
+${APP_PATH}/var/composer \
+${APP_PATH}/var/satis \
+${APP_PATH}/var/log
 )
 
 for i in "${symlinks[@]}"

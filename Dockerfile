@@ -7,7 +7,7 @@ ARG SATISFY_RELEASE
 LABEL build_version="shangmob version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 LABEL maintainer="skyer"
 
-ENV APP_ROOT=/var/www/satisfy
+ENV APP_PATH=/var/www/satisfy
 
 RUN \
  echo "**** install runtime packages ****" && \
@@ -26,7 +26,7 @@ RUN \
  mv /tmp/composer.phar /usr/local/bin/composer && \
  echo "**** fetch satisfy ****" && \
  mkdir -p \
-	${APP_ROOT} && \
+	${APP_PATH} && \
  if [ -z ${SATISFY_RELEASE+x} ]; then \
 	SATISFY_RELEASE=$(curl -sX GET "https://api.github.com/repos/ludofleury/satisfy/releases/latest" \
 	| awk '/tag_name/{print $4;exit}' FS='[""]'); \
@@ -36,9 +36,9 @@ RUN \
 	"https://github.com/ludofleury/satisfy/archive/${SATISFY_RELEASE}.tar.gz" && \
  tar xf \
 	/tmp/satisfy.tar.gz -C \
-	${APP_ROOT}/ --strip-components=1 && \
+	${APP_PATH}/ --strip-components=1 && \
  echo "**** install composer dependencies ****" && \
- composer install -d ${APP_ROOT} && \
+ composer install -d ${APP_PATH} && \
  echo "**** cleanup ****" && \
  rm -rf \
 	/root/.composer \
