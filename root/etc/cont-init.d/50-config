@@ -77,7 +77,7 @@ if [[ ! -e ${USER_HOME}/.ssh ]]; then
   chmod 700 ${USER_HOME}/.ssh
 fi
 
-if [[ "${SSH_PRIVATE_KEY}" != "unset" ]] && [[ ! -e ${USER_HOME}/.ssh/id_rsa ]]; then
+if [[ ! -e ${USER_HOME}/.ssh/id_rsa ]]; then
   echo "${SSH_PRIVATE_KEY}" > ${USER_HOME}/.ssh/id_rsa
   chmod 400 ${USER_HOME}/.ssh/id_rsa
 fi
