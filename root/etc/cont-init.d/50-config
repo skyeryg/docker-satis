@@ -72,6 +72,9 @@ if [[ ! -e ${USER_HOME}/.ssh/id_rsa ]]; then
   chmod 400 ${USER_HOME}/.ssh/id_rsa
 fi
 
+[[ -f ${USER_HOME}/.ssh/known_hosts ]] && \
+  rm ${USER_HOME}/.ssh/known_hosts
+
 for _DOMAIN in ${REPO_DOMAIN_LIST} ; do
   IFS=':' read -a arr <<< "${_DOMAIN}"
   if [[ "${#arr[@]}" == "2" ]]; then
