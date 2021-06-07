@@ -19,7 +19,7 @@ SATIS_FILE="/config/satisfy/satis.json"
 USER_HOME=/config/satisfy
 
 # make our folders
-mkdir -p /config/satisfy/{composer, satis}
+mkdir -p /config/satisfy/{composer,satis}
 
 # check for config and make default if needed
 if [[ ! -e ${PARAM_FILE} ]]; then
